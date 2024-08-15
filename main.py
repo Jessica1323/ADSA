@@ -1,55 +1,80 @@
-def convert_base(num, base):
-    """将一个十进制数转换为指定的基数"""
-    if num == 0:
-        return "0"
-    digits = []
-    while num:
-        digits.append(int(num % base))
-        num //= base
-    return ''.join(str(x) for x in digits[::-1])
+# Python implementation of Karatsuba algorithm for bit string multiplication.
 
-def karatsuba(x, y):
-    """Karatsuba 乘法算法实现"""
-    if x < 10 or y < 10:
-        return x * y
+# Helper method: given two unequal sized bit strings, converts them to
+# same length by adding leading 0s in the smaller string. Returns the
+# the new length
+def make_equal_length(str1, str2):
+    len1 = len(str1)
+    len2 = len(str2)
+    if len1 < len2:
+        for i in range(len2 - len1):
+            str1 = '0' + str1
+        return len2
+    elif len1 > len2:
+        for i in range(len1 - len2):
+            str2 = '0' + str2
+    return len1 # If len1 >= len2
 
-    n = max(len(str(x)), len(str(y)))
-    m = n // 2
+# The main function that adds two bit sequences and returns the addition
+def add_bit_strings(first, second):
+    result = ""  # To store the sum bits
 
-    high1, low1 = divmod(x, 10**m)
-    high2, low2 = divmod(y, 10**m)
+    # make the lengths same before adding
+    length = make_equal_length(first, second)
+    carry = 0  # Initialize carry
 
-    z0 = karatsuba(low1, low2)
-    z1 = karatsuba((low1 + high1), (low2 + high2))
-    z2 = karatsuba(high1, high2)
+    # Add all bits one by one
+    for i in range(length-1, -1, -1):
+        first_bit = int(first[i])
+        second_bit = int(second[i])
 
-    return (z2 * 10**(2*m)) + ((z1 - z2 - z0) * 10**m) + z0
+        # boolean expression for sum of 3 bits
+        sum = (first_bit ^ second_bit ^ carry) + ord('0')
 
-def main():
-    # 输入格式：I1 I2 B
-    input_line = input("Enter I1 I2 B: ")
-    I1_str, I2_str, B_str = input_line.split()
-    
-    # 将输入的 I1 和 I2 从进制 B 转换为十进制
-    B = int(B_str)
-    I1 = int(I1_str, B)
-    I2 = int(I2_str, B)
+        result = chr(sum) + result
 
-    # 使用学校方法计算加法
-    sum_result = I1 + I2
+        # boolean expression for 3-bit addition
+        carry = (first_bit & second_bit) | (second_bit & carry) | (first_bit & carry)
 
-    # 使用 Karatsuba 算法计算乘法
-    product_result = karatsuba(I1, I2)
+    # if overflow, then add a leading 1
+    if carry:
+        result = '1' + result
 
-    # 计算商（向下取整）
-    quotient_result = I1 // I2
+    return result
 
-    # 将结果转换回基数 B
-    sum_result_base_b = convert_base(sum_result, B)
-    product_result_base_b = convert_base(product_result, B)
-    quotient_result_base_b = convert_base(quotient_result, B)
+# A utility function to multiply single bits of strings a and b
+def multiply_single_bit(a, b):
+    return int(a[0]) * int(b[0])
 
-    # 输出结果，结果之间用空格分隔
-    print(f"{sum_result_base_b} {product_result_base_b} {quotient_result_base_b}")
+# The main function that multiplies two bit strings X and Y and returns
+# result as long integer
+def multiply(X, Y):
+    # Find the maximum of lengths of x and Y and make length
+    # of smaller string same as that of larger string
+    n = max(len(X), len(Y))
+    X = X.zfill(n)
+    Y = Y.zfill(n)
 
+    # Base cases
+    if n == 0: return 0
+    if n == 1: return int(X[0])*int(Y[0])
+
+    fh = n//2  # First half of string
+    sh = n - fh  # Second half of string
+
+    # Find the first half and second half of first string.
+    Xl = X[:fh]
+    Xr = X[fh:]
+
+    # Find the first half and second half of second string
+    Yl = Y[:fh]
+    Yr = Y[fh:]
+
+    # Recursively calculate the three products of inputs of size n/2
+    P1 = multiply(Xl, Yl)
+    P2 = multiply(Xr, Yr)
+    P3 = multiply(str(int(Xl, 2) + int(Xr, 2)), str(int(Yl, 2) + int(Yr, 2)))
+
+    # Combine the three products to get the final result.
+    return P1*(1<<(2*sh)) + (P3 - P1 - P2)*(1<<sh) + P2
 
