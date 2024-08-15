@@ -1,3 +1,13 @@
+# Integer Addition
+def school_addition(a, b):
+    return a + b
+
+
+#Integer Division 
+def integer_division(a, b):
+    return a // b
+
+# Integer Multiplication
 def karatsuba(x, y):
 
     if x < 10 or y < 10:
