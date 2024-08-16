@@ -1,4 +1,4 @@
-def convert_base(num, base):
+def base_digit(num, base):
     """将一个十进制数转换为指定的基数"""
     if num == 0:
         return "0"
@@ -52,8 +52,8 @@ def karatsuba(x, y):
 
 def main():
     # 输入格式：I1 I2 B
-    input_line = input().strip()
-    I1_str, I2_str, B_str = input_line.split()
+    input = input().strip()
+    I1_str, I2_str, B_str = input.split()
     
     # 解析输入的基数 B 和将数字 I1, I2 从 B 进制转换为十进制
     B = int(B_str)
@@ -61,18 +61,18 @@ def main():
     I2 = int(I2_str, B)
 
     # 使用学校方法计算加法
-    sum_result_base_b = school_addition(I1_str, I2_str, B)
+    sum_school = school_addition(I1_str, I2_str, B)
 
     # 使用 Karatsuba 算法计算乘法
-    product_result = karatsuba(I1, I2)
-    product_result_base_b = convert_base(product_result, B)
+    kara = karatsuba(I1, I2)
+    multiply_result = base_digit(kara, B)
 
     # 计算商（向下取整）
-    quotient_result = I1 // I2
-    quotient_result_base_b = convert_base(quotient_result, B)
+    quotient = I1 // I2
+    division = base_digit(quotient, B)
 
-    # 打印最终结果
-    print(f"{sum_result_base_b} {product_result_base_b} {quotient_result_base_b}")
+    # print
+    print(f"{sum_school} {multiply_result} {division}")
 
-if __name__ == "__main__":
-    main()
+
+# main()
