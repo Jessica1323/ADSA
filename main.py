@@ -1,80 +1,78 @@
-# Python implementation of Karatsuba algorithm for bit string multiplication.
+def convert_base(num, base):
+    """将一个十进制数转换为指定的基数"""
+    if num == 0:
+        return "0"
+    digits = []
+    while num:
+        digits.append(int(num % base))
+        num //= base
+    return ''.join(str(x) for x in digits[::-1])
 
-# Helper method: given two unequal sized bit strings, converts them to
-# same length by adding leading 0s in the smaller string. Returns the
-# the new length
-def make_equal_length(str1, str2):
-    len1 = len(str1)
-    len2 = len(str2)
-    if len1 < len2:
-        for i in range(len2 - len1):
-            str1 = '0' + str1
-        return len2
-    elif len1 > len2:
-        for i in range(len1 - len2):
-            str2 = '0' + str2
-    return len1 # If len1 >= len2
-
-# The main function that adds two bit sequences and returns the addition
-def add_bit_strings(first, second):
-    result = ""  # To store the sum bits
-
-    # make the lengths same before adding
-    length = make_equal_length(first, second)
-    carry = 0  # Initialize carry
-
-    # Add all bits one by one
-    for i in range(length-1, -1, -1):
-        first_bit = int(first[i])
-        second_bit = int(second[i])
-
-        # boolean expression for sum of 3 bits
-        sum = (first_bit ^ second_bit ^ carry) + ord('0')
-
-        result = chr(sum) + result
-
-        # boolean expression for 3-bit addition
-        carry = (first_bit & second_bit) | (second_bit & carry) | (first_bit & carry)
-
-    # if overflow, then add a leading 1
+def school_addition(I1_str, I2_str, B):
+    """在基数B下进行逐位加法"""
+    max_len = max(len(I1_str), len(I2_str))
+    I1_str = I1_str.zfill(max_len)
+    I2_str = I2_str.zfill(max_len)
+    
+    carry = 0
+    result = []
+    
+    for i in range(max_len - 1, -1, -1):
+        digit_sum = int(I1_str[i], B) + int(I2_str[i], B) + carry
+        carry = digit_sum // B
+        result.append(digit_sum % B)
+    
     if carry:
-        result = '1' + result
+        result.append(carry)
+    
+    result.reverse()
+    return ''.join(str(digit) for digit in result)
 
-    return result
+def karatsuba(x, y):
+    """Karatsuba 乘法算法实现"""
+    # 基本情况，小于10的数字直接相乘
+    if x < 10 or y < 10:
+        return x * y
 
-# A utility function to multiply single bits of strings a and b
-def multiply_single_bit(a, b):
-    return int(a[0]) * int(b[0])
+    # 计算数字的长度
+    n = max(len(str(x)), len(str(y)))
+    m = n // 2
 
-# The main function that multiplies two bit strings X and Y and returns
-# result as long integer
-def multiply(X, Y):
-    # Find the maximum of lengths of x and Y and make length
-    # of smaller string same as that of larger string
-    n = max(len(X), len(Y))
-    X = X.zfill(n)
-    Y = Y.zfill(n)
+    # 将 x 和 y 分解为两部分
+    high1, low1 = divmod(x, 10**m)
+    high2, low2 = divmod(y, 10**m)
 
-    # Base cases
-    if n == 0: return 0
-    if n == 1: return int(X[0])*int(Y[0])
+    # 递归计算三个子乘积
+    z0 = karatsuba(low1, low2)
+    z1 = karatsuba((low1 + high1), (low2 + high2))
+    z2 = karatsuba(high1, high2)
 
-    fh = n//2  # First half of string
-    sh = n - fh  # Second half of string
+    # 合并结果
+    return (z2 * 10**(2*m)) + ((z1 - z2 - z0) * 10**m) + z0
 
-    # Find the first half and second half of first string.
-    Xl = X[:fh]
-    Xr = X[fh:]
+def main():
+    # 输入格式：I1 I2 B
+    input_line = input().strip()
+    I1_str, I2_str, B_str = input_line.split()
+    
+    # 解析输入的基数 B 和将数字 I1, I2 从 B 进制转换为十进制
+    B = int(B_str)
+    I1 = int(I1_str, B)
+    I2 = int(I2_str, B)
 
-    # Find the first half and second half of second string
-    Yl = Y[:fh]
-    Yr = Y[fh:]
+    # 使用学校方法计算加法
+    sum_result_base_b = school_addition(I1_str, I2_str, B)
 
-    # Recursively calculate the three products of inputs of size n/2
-    P1 = multiply(Xl, Yl)
-    P2 = multiply(Xr, Yr)
-    P3 = multiply(str(int(Xl, 2) + int(Xr, 2)), str(int(Yl, 2) + int(Yr, 2)))
+    # 使用 Karatsuba 算法计算乘法
+    product_result = karatsuba(I1, I2)
+    product_result_base_b = convert_base(product_result, B)
 
-    # Combine the three products to get the final result.
-    return P1*(1<<(2*sh)) + (P3 - P1 - P2)*(1<<sh) + P2
+    # 计算商（向下取整）
+    quotient_result = I1 // I2
+    quotient_result_base_b = convert_base(quotient_result, B)
 
+    # 打印最终结果
+    print(f"{sum_result_base_b} {product_result_base_b} {quotient_result_base_b}")
+
+if __name__ == "__main__":
+    main()
