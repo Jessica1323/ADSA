@@ -52,8 +52,8 @@ def karatsuba(x, y):
 
 def main():
     # 输入格式：I1 I2 B
-    input = input().strip()
-    I1_str, I2_str, B_str = input.split()
+    input_str = input().strip()
+    I1_str, I2_str, B_str = input_str.split()
     
     # 解析输入的基数 B 和将数字 I1, I2 从 B 进制转换为十进制
     B = int(B_str)
