@@ -75,4 +75,4 @@ def main():
     print(f"{sum_school} {multiply_result} {division}")
 
 
-# main()
+main()
