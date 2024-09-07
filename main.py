@@ -43,7 +43,7 @@ class AVLTree:
 
         return root
 
-    # 删除操作
+    # 删除操作（改用左子树中的最大值代替）
     def delete(self, root, key):
         if not root:
             return root
@@ -62,9 +62,10 @@ class AVLTree:
                 root = None
                 return temp
 
-            temp = self.get_min_value_node(root.right)
+            # 获取左子树的最大值节点
+            temp = self.get_max_value_node(root.left)
             root.key = temp.key
-            root.right = self.delete(root.right, temp.key)
+            root.left = self.delete(root.left, temp.key)
 
         if root is None:
             return root
@@ -95,23 +96,12 @@ class AVLTree:
 
         return root
 
-    # 获取节点高度
-    def get_height(self, root):
-        if not root:
-            return 0
-        return root.height
-
-    # 获取平衡因子
-    def get_balance(self, root):
-        if not root:
-            return 0
-        return self.get_height(root.left) - self.get_height(root.right)
-
-    # 获取最小值节点
-    def get_min_value_node(self, root):
-        if root is None or root.left is None:
-            return root
-        return self.get_min_value_node(root.left)
+    # 获取最大值节点（左子树的最大值）
+    def get_max_value_node(self, root):
+        current = root
+        while current.right is not None:
+            current = current.right
+        return current
 
     # 左旋转
     def left_rotate(self, z):
@@ -132,6 +122,18 @@ class AVLTree:
         z.height = 1 + max(self.get_height(z.left), self.get_height(z.right))
         y.height = 1 + max(self.get_height(y.left), self.get_height(y.right))
         return y
+
+    # 获取节点高度
+    def get_height(self, root):
+        if not root:
+            return 0
+        return root.height
+
+    # 获取平衡因子
+    def get_balance(self, root):
+        if not root:
+            return 0
+        return self.get_height(root.left) - self.get_height(root.right)
 
     # 前序遍历
     def preorder_traversal(self, root):
