@@ -6,7 +6,7 @@ class Node:
         self.height = 1
 
 class AVLTree:
-    # 插入操作
+
     def insert(self, root, key):
         if not root:
             return Node(key)
@@ -15,35 +15,29 @@ class AVLTree:
         elif key > root.key:
             root.right = self.insert(root.right, key)
         else:
-            return root  # 如果值已存在，不执行插入
+            return root  
 
-        # 更新节点的高度
+
         root.height = 1 + max(self.get_height(root.left), self.get_height(root.right))
-
-        # 计算平衡因子
         balance = self.get_balance(root)
-
-        # 左左情况
         if balance > 1 and key < root.left.key:
             return self.right_rotate(root)
 
-        # 右右情况
+
         if balance < -1 and key > root.right.key:
             return self.left_rotate(root)
 
-        # 左右情况
+
         if balance > 1 and key > root.left.key:
             root.left = self.left_rotate(root.left)
             return self.right_rotate(root)
 
-        # 右左情况
         if balance < -1 and key < root.right.key:
             root.right = self.right_rotate(root.right)
             return self.left_rotate(root)
 
         return root
 
-    # 删除操作（改用左子树中的最大值代替）
     def delete(self, root, key):
         if not root:
             return root
@@ -62,7 +56,7 @@ class AVLTree:
                 root = None
                 return temp
 
-            # 获取左子树的最大值节点
+
             temp = self.get_max_value_node(root.left)
             root.key = temp.key
             root.left = self.delete(root.left, temp.key)
@@ -70,40 +64,31 @@ class AVLTree:
         if root is None:
             return root
 
-        # 更新节点高度
         root.height = 1 + max(self.get_height(root.left), self.get_height(root.right))
-
-        # 计算平衡因子
         balance = self.get_balance(root)
 
-        # 左左情况
         if balance > 1 and self.get_balance(root.left) >= 0:
             return self.right_rotate(root)
-
-        # 左右情况
+        
         if balance > 1 and self.get_balance(root.left) < 0:
             root.left = self.left_rotate(root.left)
             return self.right_rotate(root)
 
-        # 右右情况
         if balance < -1 and self.get_balance(root.right) <= 0:
             return self.left_rotate(root)
 
-        # 右左情况
         if balance < -1 and self.get_balance(root.right) > 0:
             root.right = self.right_rotate(root.right)
             return self.left_rotate(root)
 
         return root
-
-    # 获取最大值节点（左子树的最大值）
+    
     def get_max_value_node(self, root):
         current = root
         while current.right is not None:
             current = current.right
         return current
 
-    # 左旋转
     def left_rotate(self, z):
         y = z.right
         T2 = y.left
@@ -113,7 +98,6 @@ class AVLTree:
         y.height = 1 + max(self.get_height(y.left), self.get_height(y.right))
         return y
 
-    # 右旋转
     def right_rotate(self, z):
         y = z.left
         T3 = y.right
@@ -123,19 +107,17 @@ class AVLTree:
         y.height = 1 + max(self.get_height(y.left), self.get_height(y.right))
         return y
 
-    # 获取节点高度
     def get_height(self, root):
         if not root:
             return 0
         return root.height
 
-    # 获取平衡因子
+
     def get_balance(self, root):
         if not root:
             return 0
         return self.get_height(root.left) - self.get_height(root.right)
 
-    # 前序遍历
     def preorder_traversal(self, root):
         result = []
         if root:
@@ -144,7 +126,6 @@ class AVLTree:
             result = result + self.preorder_traversal(root.right)
         return result
 
-    # 中序遍历
     def inorder_traversal(self, root):
         result = []
         if root:
@@ -153,7 +134,6 @@ class AVLTree:
             result = result + self.inorder_traversal(root.right)
         return result
 
-    # 后序遍历
     def postorder_traversal(self, root):
         result = []
         if root:
@@ -162,13 +142,12 @@ class AVLTree:
             result.append(root.key)
         return result
 
-# 主函数
+
 def main():
     tree = AVLTree()
     root = None
     commands = input().split()
 
-    # 处理所有的 A 和 D 命令
     for command in commands[:-1]:
         if command[0] == 'A':
             value = int(command[1:])
@@ -177,7 +156,6 @@ def main():
             value = int(command[1:])
             root = tree.delete(root, value)
 
-    # 处理最后一个遍历命令
     traversal_command = commands[-1]
     if traversal_command == "PRE":
         result = tree.preorder_traversal(root)
@@ -191,5 +169,3 @@ def main():
     else:
         print("EMPTY")
 
-if __name__ == "__main__":
-    main()
