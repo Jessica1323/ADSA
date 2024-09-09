@@ -169,3 +169,5 @@ def main():
     else:
         print("EMPTY")
 
+
+main()
