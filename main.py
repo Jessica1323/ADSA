@@ -37,7 +37,6 @@ def char_to_cost(c):
 def min_cost_reconstruction(n, country, build, destroy):
     edges = []
     
-
     for i in range(n):
         for j in range(i + 1, n):
             if country[i][j] == '1':  
@@ -47,27 +46,26 @@ def min_cost_reconstruction(n, country, build, destroy):
                 build_cost = char_to_cost(build[i][j])
                 edges.append((build_cost, i, j, "build"))
     
-
     edges.sort()
     
     uf = UnionFind(n)
     total_cost = 0
-    roads_built_or_destroyed = 0
     
     for cost, u, v, action in edges:
         if uf.find(u) != uf.find(v): 
             uf.union(u, v)
             total_cost += cost
-            roads_built_or_destroyed += 1
+            if action == "destroy":
+                print(f"Destroying road between {u} and {v}, cost: {cost}")
+            elif action == "build":
+                print(f"Building road between {u} and {v}, cost: {cost}")
     
     return total_cost
-
 
 n = 3
 country = ["011", "101", "110"]
 build = ["ABD", "BAC", "DCA"]
 destroy = ["ABD", "BAC", "DCA"]
 
-
 result = min_cost_reconstruction(n, country, build, destroy)
-print(result)
+print(result) 
