@@ -37,22 +37,25 @@ def char_to_cost(c):
 def min_cost_reconstruction(n, country, build, destroy):
     edges = []
     
+    # Collect all edges (existing roads and new roads to build)
     for i in range(n):
         for j in range(i + 1, n):
-            if country[i][j] == '1':  
+            if country[i][j] == '1':  # Existing road, consider destroying
                 destroy_cost = char_to_cost(destroy[i][j])
                 edges.append((destroy_cost, i, j, "destroy"))
-            if country[i][j] == '0':  
+            if country[i][j] == '0':  # No road, consider building
                 build_cost = char_to_cost(build[i][j])
                 edges.append((build_cost, i, j, "build"))
     
+    # Sort edges by cost (Kruskal algorithm)
     edges.sort()
-    
+
     uf = UnionFind(n)
     total_cost = 0
     
+    # Apply Kruskal's algorithm to find the MST
     for cost, u, v, action in edges:
-        if uf.find(u) != uf.find(v): 
+        if uf.find(u) != uf.find(v):  # If u and v are not connected
             uf.union(u, v)
             total_cost += cost
             if action == "destroy":
@@ -62,10 +65,11 @@ def min_cost_reconstruction(n, country, build, destroy):
     
     return total_cost
 
+
 n = 3
 country = ["011", "101", "110"]
 build = ["ABD", "BAC", "DCA"]
 destroy = ["ABD", "BAC", "DCA"]
 
 result = min_cost_reconstruction(n, country, build, destroy)
-print(result) 
+print(result)  
