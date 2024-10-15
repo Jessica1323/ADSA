@@ -20,17 +20,24 @@ class UnionFind:
                 self.parent[rootQ] = rootP
                 self.rank[rootP] += 1
 
+
 def char_to_cost(c):
-    if 'A' <= c <= 'Z':
-        return ord(c) - ord('A')
-    elif 'a' <= c <= 'z':
-        return ord(c) - ord('a') + 26
-    return float('inf')  
+    cost_map = {
+        'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9,
+        'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18, 'T': 19,
+        'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24, 'Z': 25,
+        'a': 26, 'b': 27, 'c': 28, 'd': 29, 'e': 30, 'f': 31, 'g': 32, 'h': 33, 'i': 34, 'j': 35,
+        'k': 36, 'l': 37, 'm': 38, 'n': 39, 'o': 40, 'p': 41, 'q': 42, 'r': 43, 's': 44, 't': 45,
+        'u': 46, 'v': 47, 'w': 48, 'x': 49, 'y': 50, 'z': 51
+    }
+    
+    return cost_map.get(c, float('inf')) 
+
 
 def min_cost_reconstruction(n, country, build, destroy):
     edges = []
     
-    
+
     for i in range(n):
         for j in range(i + 1, n):
             if country[i][j] == '1':  
@@ -40,22 +47,27 @@ def min_cost_reconstruction(n, country, build, destroy):
                 build_cost = char_to_cost(build[i][j])
                 edges.append((build_cost, i, j, "build"))
     
+
     edges.sort()
     
     uf = UnionFind(n)
     total_cost = 0
+    roads_built_or_destroyed = 0
     
     for cost, u, v, action in edges:
         if uf.find(u) != uf.find(v): 
             uf.union(u, v)
             total_cost += cost
+            roads_built_or_destroyed += 1
     
     return total_cost
+
 
 n = 3
 country = ["011", "101", "110"]
 build = ["ABD", "BAC", "DCA"]
 destroy = ["ABD", "BAC", "DCA"]
+
 
 result = min_cost_reconstruction(n, country, build, destroy)
 print(result)
