@@ -84,11 +84,12 @@ def kruskal(n, country, build, destroy):
 
 
 def process_input(input_string):
+  
+    input_string = input()
     country, build, destroy = parse_input(input_string)
-    n = len(country) 
+    n = len(country)
 
-    mst_weight, connected_components = kruskal(n, country, build, destroy)
-
+    mst_weight = kruskal(n, country, build, destroy)
 
     print(f"{mst_weight}")
 
