@@ -69,14 +69,13 @@ def kruskal(n, country, build, destroy):
 
     return mst_weight
 
-def process_input():
-    input_string = input("Enter your input in the format: country_matrix build_matrix destroy_matrix: ")
+def process_input(input_string):
     country, build, destroy = parse_input(input_string)
     n = len(country)
 
     mst_weight = kruskal(n, country, build, destroy)
 
-    print(f"Output: {mst_weight}")
+    print(f"{mst_weight}")
 
 
 process_input()
