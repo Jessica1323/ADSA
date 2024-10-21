@@ -83,7 +83,7 @@ def kruskal(n, country, build, destroy):
     return mst_weight, connected_components
 
 
-def process_input(input_string):
+def process_input():
   
     input_string = input()
     country, build, destroy = parse_input(input_string)
