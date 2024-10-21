@@ -49,7 +49,7 @@ def kruskal(n, country, build, destroy):
     edges = []
 
     for i in range(n):
-        for j in range(i + 1, n): 
+        for j in range(i + 1, n):  
             if country[i][j] == 1:
                 cost = letter_to_cost(destroy[i][j])
                 edges.append((i, j, cost, 'destroy'))
@@ -67,13 +67,14 @@ def kruskal(n, country, build, destroy):
             mst_weight += weight
             connected_components -= 1
 
-    return mst_weight, connected_components
+    return mst_weight
 
 def process_input(input_string):
     country, build, destroy = parse_input(input_string)
     n = len(country)
 
-    mst_weight, connected_components = kruskal(n, country, build, destroy)
+    mst_weight = kruskal(n, country, build, destroy)
 
     print(f"{mst_weight}")
+
 
