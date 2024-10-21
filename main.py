@@ -77,4 +77,22 @@ def process_input(input_string):
 
     print(f"{mst_weight}")
 
+# Test Case 1
+input_string_1 = "000,000,000 ABD,BAC,DCA ABD,BAC,DCA"
+process_input(input_string_1)  # Expected output: 3
 
+# Test Case 2
+input_string_2 = "011,101,110 ABD,BAC,DCA ABD,BAC,DCA"
+process_input(input_string_2)  # Expected output: 1
+
+# Test Case 4
+input_string_4 = "0 A A"
+process_input(input_string_4)  # Expected output: 0
+
+# Test Case 6
+input_string_6 = "0000000000,0000000011,0001010000,0010010000,0000001000,0011000000,0000100000,0000000011,0100000101,0100000110 AhPEqkSFMM,hAfKPtsDad,PfAyGQkaqN,EKyAeLpRpm,qPGeASfNwo,ktQLSAnCAK,SskpfnAdJS,FDaRNCdAZz,MaqpwAJZAn,MdNmoKSznA AgTqWWxEYH,gAXPgjzIRA,TXAleTmWvT,qPlAQkwxRO,WgeQAqgbJJ,WjTkqAiTzl,xzmwgiAuHb,EIWxbTuAwk,YRvRJzHwAn,HATOJlbknA"
+process_input(input_string_6)  # Expected output: 65
+
+# Test Case 8
+input_string_8 = "01,10 AB,BA AJ,JA"
+process_input(input_string_8)  # Expected output: 0
