@@ -78,4 +78,4 @@ def process_input(input_string):
     print(f"{mst_weight}")
 
 
-process_input()
+# process_input()
