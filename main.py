@@ -45,11 +45,10 @@ class UnionFind:
 
 def kruskal(n, country, build, destroy):
     uf = UnionFind(n)
-
     edges = []
 
     for i in range(n):
-        for j in range(i + 1, n):  
+        for j in range(i + 1, n):
             if country[i][j] == 1:
                 cost = letter_to_cost(destroy[i][j])
                 edges.append((i, j, cost, 'destroy'))
@@ -77,6 +76,5 @@ def process_input():
     mst_weight = kruskal(n, country, build, destroy)
 
     print(f"{mst_weight}")
-
 
 process_input()
