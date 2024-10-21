@@ -76,6 +76,3 @@ def process_input(input_string):
     mst_weight = kruskal(n, country, build, destroy)
 
     print(f"{mst_weight}")
-
-
-# process_input()
