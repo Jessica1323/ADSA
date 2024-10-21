@@ -3,9 +3,9 @@ def letter_to_cost(letter):
     if 'A' <= letter <= 'Z':
         return ord(letter) - ord('A') 
     elif 'a' <= letter <= 'z':
-        return ord(letter) - ord('a') + 26 
+        return ord(letter) - ord('a') + 26  
     else:
-        return float('inf')  
+        return float('inf') 
 
 
 def parse_input(input_string):
@@ -25,13 +25,13 @@ class UnionFind:
         self.parent = list(range(n))
         self.rank = [0] * n
 
-  
+
     def find(self, p):
         if self.parent[p] != p:
             self.parent[p] = self.find(self.parent[p])
         return self.parent[p]
 
-   
+
     def union(self, p, q):
         rootP = self.find(p)
         rootQ = self.find(q)
@@ -39,7 +39,6 @@ class UnionFind:
         if rootP == rootQ:
             return False
 
-  
         if self.rank[rootP] > self.rank[rootQ]:
             self.parent[rootQ] = rootP
         elif self.rank[rootP] < self.rank[rootQ]:
@@ -51,27 +50,46 @@ class UnionFind:
         return True
 
 
-def count_connected_components(n, country):
+def kruskal(n, country, build, destroy):
+
     uf = UnionFind(n)
-    
+
+
+    edges = []
+
     for i in range(n):
         for j in range(i + 1, n):
-            if country[i][j] == 1:  
-                uf.union(i, j)
+            if country[i][j] == 1:
+           
+                cost = letter_to_cost(destroy[i][j])
+                edges.append((i, j, cost, 'destroy'))
+            else:
+        
+                cost = letter_to_cost(build[i][j])
+                edges.append((i, j, cost, 'build'))
 
 
-    connected_components = len(set(uf.find(i) for i in range(n)))
-    return connected_components
+    edges = sorted(edges, key=lambda x: x[2])
+
+    mst_weight = 0 
+    connected_components = n  
+
+
+    for u, v, weight, action in edges:
+        if uf.union(u, v):  
+            mst_weight += weight
+            connected_components -= 1
+
+    return mst_weight, connected_components
 
 
 def process_input(input_string):
     country, build, destroy = parse_input(input_string)
     n = len(country)  
 
-    connected_components = count_connected_components(n, country)
+    mst_weight, connected_components = kruskal(n, country, build, destroy)
 
-    print(f"{connected_components}")
+   
+    print(f"{mst_weight}")
 
 
-# input_string = "000,000,000 ABD,BAC,DCA ABD,BAC,DCA"
-# process_input(input_string)
