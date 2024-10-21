@@ -94,5 +94,5 @@ def process_input(input_string):
     print(f"{mst_weight}")
 
 # 示例输入
-input_string = "0111111,1011111,1101111,1110111,1111011,1111101,1111110 AzvpNrk,zAFfVLm,vFAaDFn,pfaAESX,NVDEAco,rLFScAx,kmnXoxA AzeGcYA,zAgCTsQ,egAPSNK,GCPANfu,cTSNAIz,YsNfIAt,AQKuztA"
+input_string = "011,101,110 ABD,BAC,DCA ABD,BAC,DCA"
 process_input(input_string)
