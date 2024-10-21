@@ -66,6 +66,9 @@ def kruskal(n, country, build, destroy):
             mst_weight += weight
             connected_components -= 1
 
+    if connected_components > 1:
+        return float('inf')
+    
     return mst_weight
 
 def process_input():
