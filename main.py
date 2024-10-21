@@ -37,7 +37,6 @@ class Map:
         self.running_cost = 0
 
     def connect_nodes(self):
-        print("")
         if len(self.nodes) == 1:
             self.running_cost = 0
             return
@@ -154,7 +153,7 @@ class Map:
 
 
 def main():
-    print("111")
+   
     # 读取输入
     input_line = input().strip()
     tokens = input_line.split(',')
