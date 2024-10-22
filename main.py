@@ -1,83 +1,91 @@
-def letter_to_cost(letter):
-    if 'A' <= letter <= 'Z':
-        return ord(letter) - ord('A')
-    elif 'a' <= letter <= 'z':
-        return ord(letter) - ord('a') + 26
+def letter_to_cost(c):
+    if 'A' <= c <= 'Z':
+        return ord(c) - ord('A')
+    elif 'a' <= c <= 'z':
+        return ord(c) - ord('a') + 26
     else:
-        return float('inf')
+        raise ValueError(f"Invalid: {c}")
 
-def parse_input(input_string):
-    parts = input_string.strip().split(' ')
-    country_str, build_str, destroy_str = parts[0], parts[1], parts[2]
+def find(parent, i):
+    if parent[i] != i:
+        parent[i] = find(parent, parent[i])
+    return parent[i]
+
+def union(parent, rank, x, y):
+    xroot = find(parent, x)
+    yroot = find(parent, y)
     
-    country = [list(map(int, row)) for row in country_str.split(',')]
-    build = [list(row) for row in build_str.split(',')]
-    destroy = [list(row) for row in destroy_str.split(',')]
+    if xroot == yroot:
+        return  
     
-    return country, build, destroy
+    if rank[xroot] < rank[yroot]:
+        parent[xroot] = yroot
+    elif rank[xroot] > rank[yroot]:
+        parent[yroot] = xroot
+    else:
+        parent[yroot] = xroot
+        rank[xroot] += 1
 
-class UnionFind:
-    def __init__(self, n):
-        self.parent = list(range(n))
-        self.rank = [0] * n
-
-    def find(self, p):
-        if self.parent[p] != p:
-            self.parent[p] = self.find(self.parent[p])
-        return self.parent[p]
-
-    def union(self, p, q):
-        rootP = self.find(p)
-        rootQ = self.find(q)
-
-        if rootP == rootQ:
-            return False
-
-        if self.rank[rootP] > self.rank[rootQ]:
-            self.parent[rootQ] = rootP
-        elif self.rank[rootP] < self.rank[rootQ]:
-            self.parent[rootP] = rootQ
-        else:
-            self.parent[rootQ] = rootP
-            self.rank[rootP] += 1
-
-        return True
-
-def kruskal(n, country, build, destroy):
-    uf = UnionFind(n)
+def minimal_reconstruction_cost(country_str, build_str, destroy_str):
+    country_rows = country_str.strip().split(',')
+    build_rows = build_str.strip().split(',')
+    destroy_rows = destroy_str.strip().split(',')
+    
+    n = len(country_rows)
+    
+    if not (all(len(row) == n for row in country_rows) and
+            all(len(row) == n for row in build_rows) and
+            all(len(row) == n for row in destroy_rows)):
+        raise ValueError("All input matrices must be square and of the same size.")
+    
+    total_destroy_cost = 0
+    for i in range(n):
+        for j in range(n):
+            if i < j and country_rows[i][j] == '1':
+                destroy_cost = letter_to_cost(destroy_rows[i][j])
+                total_destroy_cost += destroy_cost
+    
     edges = []
-
     for i in range(n):
         for j in range(i + 1, n):
-            if country[i][j] == 1:
-                cost = letter_to_cost(destroy[i][j])
-                edges.append((i, j, cost, 'destroy'))
+            if country_rows[i][j] == '1':
+                destroy_cost = letter_to_cost(destroy_rows[i][j])
+                edge_cost = -destroy_cost
+                edges.append((edge_cost, i, j))
             else:
-                cost = letter_to_cost(build[i][j])
-                edges.append((i, j, cost, 'build'))
-
-    edges = sorted(edges, key=lambda x: x[2])
-
-    mst_weight = 0
-    connected_components = n
-
-    for u, v, weight, action in edges:
-        if uf.union(u, v):
-            mst_weight += weight
-            connected_components -= 1
-
-    if connected_components > 1:
-        return float('inf')
+                build_cost = letter_to_cost(build_rows[i][j])
+                edge_cost = build_cost
+                edges.append((edge_cost, i, j))
     
-    return mst_weight
+    edges.sort()
+    
 
-def process_input():
-    input_string = input()
-    country, build, destroy = parse_input(input_string)
-    n = len(country)
+    parent = [i for i in range(n)]
+    rank = [0] * n
+    
+    mst_cost = 0
+    edges_used = 0  
+    
+    for cost, u, v in edges:
+        if find(parent, u) != find(parent, v):
+            union(parent, rank, u, v)
+            mst_cost += cost
+            edges_used += 1
+            if edges_used == n - 1:
+                break  
+    
+    if edges_used != n - 1:
+        raise ValueError("It's impossible to connect all cities into a tree.")
 
-    mst_weight = kruskal(n, country, build, destroy)
+    minimal_total_cost = total_destroy_cost + mst_cost
+    
+    return minimal_total_cost
 
-    print(f"{mst_weight}")
 
-process_input()
+# if __name__ == "__main__":
+  
+#     country_input1 = "000,000,000"
+#     build_input1 = "ABD,BAC,DCA"
+#     destroy_input1 = "ABD,BAC,DCA"
+#     output1 = minimal_reconstruction_cost(country_input1, build_input1, destroy_input1)
+#     print(output1)  
