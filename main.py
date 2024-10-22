@@ -85,6 +85,5 @@ def minimal_cost(country_str, build_str, destroy_str):
 if __name__ == "__main__":
     str = input()
     nextStr = str.split(" ")
-    print(nextStr)
     output1 = minimal_cost(nextStr[0],nextStr[1],nextStr[2])
     print(output1)  
