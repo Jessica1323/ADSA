@@ -26,7 +26,7 @@ def union(parent, rank, x, y):
         parent[yroot] = xroot
         rank[xroot] += 1
 
-def minimal_reconstruction_cost(country_str, build_str, destroy_str):
+def minimal_cost(country_str, build_str, destroy_str):
     country_rows = country_str.strip().split(',')
     build_rows = build_str.strip().split(',')
     destroy_rows = destroy_str.strip().split(',')
@@ -82,10 +82,9 @@ def minimal_reconstruction_cost(country_str, build_str, destroy_str):
     return minimal_total_cost
 
 
-# if __name__ == "__main__":
-  
-#     country_input1 = "000,000,000"
-#     build_input1 = "ABD,BAC,DCA"
-#     destroy_input1 = "ABD,BAC,DCA"
-#     output1 = minimal_reconstruction_cost(country_input1, build_input1, destroy_input1)
-#     print(output1)  
+if __name__ == "__main__":
+    str = input()
+    nextStr = str.split(" ")
+    print(nextStr)
+    output1 = minimal_cost(nextStr[0],nextStr[1],nextStr[2])
+    print(output1)  
